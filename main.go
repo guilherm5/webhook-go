@@ -175,15 +175,16 @@ func main() {
 		port = "8080"
 	}*/
 
-	listenAddr := ":8080"
-	if val, ok := os.LookupEnv("FUNCTIONS_CUSTOMHANDLER_PORT"); ok {
-		listenAddr = ":" + val
-	}
-
 	router := gin.Default()
 	router.POST("/webhook/sendgrid", h.sendgridWeb)
 	//router.GET("/ping", ping)
+	port := os.Getenv("HTTP_PLATFORM_PORT")
 
-	router.Run(listenAddr)
+	// default back to 8080 for local dev
+	if port == "" {
+		port = "8080"
+	}
+
+	router.Run("127.0.0.1:" + port)
 
 }
